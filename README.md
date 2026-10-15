@@ -23,7 +23,7 @@ Esta API centraliza esse controle: cadastra **tutores**, os **pets** de cada tut
 
 - .NET 10 / ASP.NET Core Minimal APIs
 - Entity Framework Core 10 (SQLite) com Migrations
-- OpenAPI nativo + [Scalar](https://scalar.com) como interface de documentação/testes
+- OpenAPI nativo + Swagger UI como interface de documentação/testes
 
 ## Como rodar localmente
 
@@ -38,7 +38,7 @@ dotnet run
 ```
 
 - `dotnet ef database update` aplica as migrations e cria o `petshop.db`. (A API também aplica migrations pendentes ao iniciar, então rodar `dotnet run` direto também funciona.)
-- Abra a URL exibida no console (ex.: `http://localhost:5xxx`). A raiz `/` redireciona para a documentação interativa em **`/scalar`**. O documento OpenAPI fica em `/openapi/v1.json`.
+- Abra a URL exibida no console (ex.: `http://localhost:5xxx`). A raiz `/` redireciona para a documentação interativa (Swagger UI) em **`/swagger`**. O documento OpenAPI fica em `/openapi/v1.json`.
 
 ## Modelo de dados
 
@@ -108,6 +108,108 @@ Tutor 1 ──── N Pet 1 ──── N Agendamento
 
 ## Evidências de teste
 
-Prints de cada endpoint funcionando (Scalar) estão em [`docs/evidencias`](docs/evidencias).
+Prints dos endpoints funcionando, testados pelo Swagger UI (`/swagger`). Os arquivos ficam na pasta [`assets`](assets).
 
-_(adicionar os prints e listar aqui)_
+### Tutores
+
+**POST `/tutores`** — cadastra tutor (201)
+
+![POST /tutores - 201](assets/01-post-tutor-201.png)
+
+**POST `/tutores`** — cadastra um segundo tutor (201)
+
+![POST /tutores - 201](assets/02-post-tutor-201.png)
+
+**GET `/tutores`** — lista tutores (200)
+
+![GET /tutores - 200](assets/03-get-tutores-200.png)
+
+**GET `/tutores/{id}`** — busca tutor por id (200)
+
+![GET /tutores/1 - 200](assets/04-get-tutor-por-id-200.png)
+
+**PUT `/tutores/{id}`** — atualiza tutor (200)
+
+![PUT /tutores/1 - 200](assets/05-put-tutor-200.png)
+
+**GET `/tutores/{id}/pets`** — lista os pets de um tutor (200)
+
+![GET /tutores/1/pets - 200](assets/10-get-pets-do-tutor-200.png)
+
+**DELETE `/tutores/{id}`** — remove tutor sem pets (204)
+
+![DELETE /tutores/2 - 204](assets/28-delete-tutor-204.png)
+
+### Pets
+
+**POST `/pets`** — cadastra pet (201)
+
+![POST /pets - 201](assets/06-post-pet-201.png)
+
+**POST `/pets`** — cadastra um segundo pet, sem raça nem data de nascimento (201)
+
+![POST /pets - 201](assets/07-post-pet-201.png)
+
+**GET `/pets`** — lista pets (200)
+
+![GET /pets - 200](assets/08-get-pets-200.png)
+
+**GET `/pets/{id}`** — busca pet por id (200)
+
+![GET /pets/2 - 200](assets/09-get-pet-por-id-200.png)
+
+**PUT `/pets/{id}`** — atualiza pet (200)
+
+![PUT /pets/1 - 200](assets/11-put-pet-200.png)
+
+**GET `/pets/{id}/agendamentos`** — lista os agendamentos de um pet (200)
+
+![GET /pets/1/agendamentos - 200](assets/16-get-agendamentos-do-pet-200.png)
+
+**DELETE `/pets/{id}`** — remove pet sem agendamentos (204)
+
+![DELETE /pets/2 - 204](assets/27-delete-pet-204.png)
+
+### Agendamentos
+
+**POST `/agendamentos`** — agenda um serviço (201)
+
+![POST /agendamentos - 201](assets/12-post-agendamento-201.png)
+
+**POST `/agendamentos`** — agenda um segundo serviço (201)
+
+![POST /agendamentos - 201](assets/13-post-agendamento-201.png)
+
+**GET `/agendamentos`** — lista agendamentos (200)
+
+![GET /agendamentos - 200](assets/14-get-agendamentos-200.png)
+
+**GET `/agendamentos/{id}`** — busca agendamento por id (200)
+
+![GET /agendamentos/1 - 200](assets/15-get-agendamento-por-id-200.png)
+
+**PUT `/agendamentos/{id}`** — atualiza agendamento, incluindo o status (200)
+
+![PUT /agendamentos/1 - 200](assets/17-put-agendamento-200.png)
+
+**DELETE `/agendamentos/{id}`** — remove agendamento (204)
+
+![DELETE /agendamentos/2 - 204](assets/26-delete-agendamento-204.png)
+
+### Tratamento de erros
+
+**POST `/tutores`** com dados inválidos — validação (400)
+
+![POST /tutores - 400](assets/18-post-tutor-400-validacao.png)
+
+**POST `/tutores`** com e-mail já cadastrado (409)
+
+![POST /tutores - 409](assets/19-post-tutor-409-email-duplicado.png)
+
+**POST `/pets`** com tutor inexistente (404)
+
+![POST /pets - 404](assets/20-post-pet-404-tutor-inexistente.png)
+
+**POST `/agendamentos`** em horário já ocupado pelo pet (409)
+
+![POST /agendamentos - 409](assets/21-post-agendamento-409-horario-ocupado.png)

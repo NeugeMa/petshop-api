@@ -2,7 +2,6 @@ using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using PetShopApi.Data;
 using PetShopApi.Endpoints;
-using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,8 +28,8 @@ app.UseExceptionHandler();
 app.UseStatusCodePages();
 
 app.MapOpenApi();
-app.MapScalarApiReference();
-app.MapGet("/", () => Results.Redirect("/scalar")).ExcludeFromDescription();
+app.UseSwaggerUI(opt => opt.SwaggerEndpoint("/openapi/v1.json", "PetShop API v1"));
+app.MapGet("/", () => Results.Redirect("/swagger")).ExcludeFromDescription();
 
 app.MapTutorEndpoints();
 app.MapPetEndpoints();
